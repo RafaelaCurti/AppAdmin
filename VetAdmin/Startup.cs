@@ -31,7 +31,7 @@ namespace VetAdmin
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddControllersWithViews();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -42,16 +42,19 @@ namespace VetAdmin
 
             //STRING DE CONEXÃO
             services.AddDbContext<AppDbContext>(option => option.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddRazorPages();
 
             //CONFIGURAÇÃO DA INTERFACE PARA O REPOSITORY
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
             services.AddScoped<IClienteRepository, ClienteRepository>();
+ 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+      
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -61,13 +64,29 @@ namespace VetAdmin
                     c.SwaggerEndpoint("v1/swagger.json", "VetAdmin V1");
                 });
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseAuthorization();
 
+            //Caso queira retornar Razor
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name: "default",
+            //        pattern: "{controller=Home}/{action=Index}/{id?}");
+            //    endpoints.MapRazorPages();
+            //});
+
+            //Retorno do JSON
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

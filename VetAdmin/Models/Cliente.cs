@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VetAdmin.Models
 {
@@ -13,9 +14,12 @@ namespace VetAdmin.Models
 
         public int CanalDeComunicacaoEscolhido { get; set; } // Consider using an enum for communication channels
 
-        [RegularExpression(@"^\d{8}$", ErrorMessage = "CEP inválido.")]
+        //[RegularExpression(@"^\d{8}$", ErrorMessage = "CEP inválido.")]
         public int CEP { get; set; }
 
-        public virtual ICollection<Usuario> Usuario { get; set; }
+        // Relacionamento com Usuario (1 para 1)
+        [ForeignKey("Usuario")]
+        public int UsuarioId { get; set; }
+        public virtual Usuario Usuario { get; set; }
     }
 }

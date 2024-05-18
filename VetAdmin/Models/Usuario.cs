@@ -12,7 +12,7 @@ namespace VetAdmin.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "O campo Login é obrigatório.")]
-        [MaxLength(10, ErrorMessage = "O Login deve ter no máximo 10 caracteres.")]
+        [MaxLength(50, ErrorMessage = "O Login deve ter no máximo 10 caracteres.")]
         [MinLength(4, ErrorMessage = "O Login deve ter no mínimo 4 caracteres.")]
         public string Login { get; set; }
 
@@ -41,18 +41,15 @@ namespace VetAdmin.Models
         [RegularExpression(@"^\d{3}\.\d{3}\.\d{3}-\d{2}$", ErrorMessage = "CPF inválido.")]
         public string CPF { get; set; }
 
-        [RegularExpression(@"^\d{2} \d{7}-\d{1}$", ErrorMessage = "RG inválido.")] // Adjust regex for your region's format
         public string RG { get; set; }
 
         [EmailAddress(ErrorMessage = "Email inválido.")]
         public string Email { get; set; }
 
         [Phone]
-        [RegularExpression(@"^\(\d{2}\) \d{4}-\d{4}$", ErrorMessage = "Telefone inválido.")] // Adjust regex for your region's format
         public string Telefone { get; set; }
 
         [Phone]
-        [RegularExpression(@"^\(\d{2}\) \d{5}-\d{4}$", ErrorMessage = "Celular inválido.")] // Adjust regex for your region's format
         public string Celular { get; set; }
 
         public int Sexo { get; set; }
@@ -70,18 +67,15 @@ namespace VetAdmin.Models
         public string Cidade { get; set; }
 
         [MaxLength(50, ErrorMessage = "O Estado deve ter no máximo 50 caracteres.")]
-        [MinLength(5, ErrorMessage = "O Estado deve ter no mínimo 5 caracteres.")]
+        [MinLength(2, ErrorMessage = "O Estado deve ter no mínimo 2 caracteres.")]
         public string Estado { get; set; }
 
         public int EstadoCivil { get; set; }
 
-        [ForeignKey("FuncionarioId")]
-        public Funcionario FuncionarioCriador { get; set; }
+        // Relacionamento com Cliente (1 para 1)
+        public Cliente Cliente { get; set; }
 
-        public int FuncionarioId { get; set; } // Added for foreign key relationship
-
-        //Quando for relacionamento
-        //[InverseProperty(nameof(ObjetoRelacionado))]
-        //public virtual ICollection<ObjetoRelacionado> nomeObjetoRelacionad { get; set; }
+        // Relacionamento com Funcionário (1 para 1)
+        public Funcionario Funcionario { get; set; }
     }
 }

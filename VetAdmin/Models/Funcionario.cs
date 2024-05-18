@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VetAdmin.Models
 {
@@ -21,6 +22,9 @@ namespace VetAdmin.Models
         [MaxLength(50, ErrorMessage = "A Especialidade deve ter no máximo 50 caracteres.")]
         public string Especialidade { get; set; }
 
-        public virtual ICollection<Usuario> Usuario { get; set; }
+        // Relacionamento com Usuario (1 para 1)
+        [ForeignKey("Usuario")]
+        public int UsuarioId { get; set; }
+        public virtual Usuario Usuario { get; set; }
     }
 }

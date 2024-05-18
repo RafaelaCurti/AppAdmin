@@ -11,9 +11,13 @@ namespace VetAdmin.Repositories
     public class UsuarioRepository : IUsuarioRepository
     {
         private readonly AppDbContext _appDbContext;
-        public UsuarioRepository(AppDbContext appDbContext)
+        private readonly IFuncionarioRepository _funcionario;
+        private readonly IClienteRepository _cliente;
+        public UsuarioRepository(AppDbContext appDbContext, IFuncionarioRepository funcionario, IClienteRepository cliente)
         {
             _appDbContext = appDbContext;
+            _funcionario = funcionario;
+            _cliente = cliente;
         }
         public void Alterar(Usuario usuario)
         {
@@ -57,7 +61,13 @@ namespace VetAdmin.Repositories
 
         public async Task<IEnumerable<Usuario>> Listar()
         {
-            return await _appDbContext.Usuario.ToListAsync();
+            var usuariosComRelacionamentos = await _appDbContext.Usuario
+               .Include(u => u.Funcionario)
+               .Include(u => u.Cliente)
+               .ToListAsync();
+
+            return usuariosComRelacionamentos;
+           
         }
 
         public async Task<bool> SalvarAssincrono()

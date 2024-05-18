@@ -35,7 +35,7 @@ namespace VetAdmin.Repositories
             throw new System.NotImplementedException();
         }
 
-        public void InlcuirUsuario(Funcionario funcionario)
+        public void InlcuirFuncionario(Funcionario funcionario)
         {
             _appDbContext.Funcionario.Add(funcionario);
         }

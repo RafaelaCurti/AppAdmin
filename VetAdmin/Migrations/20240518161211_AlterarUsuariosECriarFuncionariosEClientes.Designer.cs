@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VetAdmin.Context;
 
 namespace VetAdmin.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240518161211_AlterarUsuariosECriarFuncionariosEClientes")]
+    partial class AlterarUsuariosECriarFuncionariosEClientes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,13 +35,7 @@ namespace VetAdmin.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UsuarioId")
-                        .IsUnique();
 
                     b.ToTable("Cliente");
                 });
@@ -67,13 +63,7 @@ namespace VetAdmin.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UsuarioId")
-                        .IsUnique();
 
                     b.ToTable("Funcionario");
                 });
@@ -97,6 +87,9 @@ namespace VetAdmin.Migrations
                     b.Property<string>("Cidade")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
+
+                    b.Property<int?>("ClienteId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Codigo")
                         .HasColumnType("int");
@@ -124,10 +117,13 @@ namespace VetAdmin.Migrations
                     b.Property<int>("EstadoCivil")
                         .HasColumnType("int");
 
+                    b.Property<int>("FuncionarioId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Login")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Nome")
                         .HasMaxLength(50)
@@ -152,36 +148,36 @@ namespace VetAdmin.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("FuncionarioId");
+
                     b.ToTable("Usuario");
+                });
+
+            modelBuilder.Entity("VetAdmin.Models.Usuario", b =>
+                {
+                    b.HasOne("VetAdmin.Models.Cliente", null)
+                        .WithMany("Usuario")
+                        .HasForeignKey("ClienteId");
+
+                    b.HasOne("VetAdmin.Models.Funcionario", "FuncionarioCriador")
+                        .WithMany("Usuario")
+                        .HasForeignKey("FuncionarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FuncionarioCriador");
                 });
 
             modelBuilder.Entity("VetAdmin.Models.Cliente", b =>
                 {
-                    b.HasOne("VetAdmin.Models.Usuario", "Usuario")
-                        .WithOne("Cliente")
-                        .HasForeignKey("VetAdmin.Models.Cliente", "UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("VetAdmin.Models.Funcionario", b =>
                 {
-                    b.HasOne("VetAdmin.Models.Usuario", "Usuario")
-                        .WithOne("Funcionario")
-                        .HasForeignKey("VetAdmin.Models.Funcionario", "UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("VetAdmin.Models.Usuario", b =>
-                {
-                    b.Navigation("Cliente");
-
-                    b.Navigation("Funcionario");
                 });
 #pragma warning restore 612, 618
         }

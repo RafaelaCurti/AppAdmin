@@ -7,7 +7,7 @@ namespace VetAdmin.Interfaces
     public interface IFuncionarioRepository
     {
         //Task<>
-        void InlcuirUsuario(Funcionario funcionario);
+        void InlcuirFuncionario(Funcionario funcionario);
         void Alterar(Funcionario funcionario);
         void Excluir(Funcionario funcionario);
         Task<IEnumerable<Funcionario>> Listar();
