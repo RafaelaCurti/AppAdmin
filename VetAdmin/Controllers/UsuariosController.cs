@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetAdmin.Context;
 using VetAdmin.Models;
+using VetAdmin.Repositories;
 
 namespace VetAdmin.Controllers
 {
@@ -14,30 +15,29 @@ namespace VetAdmin.Controllers
     [Route("api/[controller]")]
     public class UsuariosController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly UsuarioRepository _context;
 
-        public UsuariosController(AppDbContext context)
+        public UsuariosController(UsuarioRepository context)
         {
             _context = context;
         }
+        ///  <sumary>
+        ///  Método Index que retornará a lista de todos os usuários
+        ///  </sumary>
+        ///  <returns></returns>
 
         // GET: Usuario
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            return View(await _context.Usuario.ToListAsync());
+            return View(await _context.Listar());
         }
 
         // GET: Usuario/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var usuario = await _context.Usuario
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var usuario = await _context.BuscarPorId(id);
             if (usuario == null)
             {
                 return NotFound();
@@ -45,7 +45,7 @@ namespace VetAdmin.Controllers
 
             return View(usuario);
         }
-
+        [HttpGet]
         // GET: Usuario/Create
         public IActionResult Create()
         {
@@ -61,22 +61,18 @@ namespace VetAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(usuario);
-                await _context.SaveChangesAsync();
+                _context.InlcuirUsuario(usuario);
+                await _context.SalvarAssincrono();
                 return RedirectToAction(nameof(Index));
             }
             return View(usuario);
         }
 
         // GET: Usuario/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var usuario = await _context.Usuario.FindAsync(id);
+            var usuario = await _context.BuscarPorId(id);
             if (usuario == null)
             {
                 return NotFound();
@@ -87,48 +83,43 @@ namespace VetAdmin.Controllers
         // POST: Usuario/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Login,Senha")] Usuario usuario)
         {
-            if (id != usuario.Id)
-            {
-                return NotFound();
-            }
+            //if (id != usuario.Id)
+            //{
+            //    return NotFound();
+            //}
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(usuario);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UsuarioExists(usuario.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
+            //if (ModelState.IsValid)
+            //{
+            //    try
+            //    {
+                    _context.Alterar(usuario);
+                    await _context.SalvarAssincrono();
+            //    }
+            //    catch (DbUpdateConcurrencyException)
+            //    {
+            //        if (!UsuarioExists(usuario.Id))
+            //        {
+            //            return NotFound();
+            //        }
+            //        else
+            //        {
+            //            throw;
+            //        }
+            //    }
+            //    return RedirectToAction(nameof(Index));
+            //}
             return View(usuario);
         }
 
         // GET: Usuario/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var usuario = await _context.Usuario
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var usuario = await _context.BuscarPorId(id);
             if (usuario == null)
             {
                 return NotFound();
@@ -138,19 +129,25 @@ namespace VetAdmin.Controllers
         }
 
         // POST: Usuario/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpDelete, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var usuario = await _context.Usuario.FindAsync(id);
-            _context.Usuario.Remove(usuario);
-            await _context.SaveChangesAsync();
+            var usuario = await _context.BuscarPorId(id);
+            _context.Excluir(usuario);
+            await _context.SalvarAssincrono();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UsuarioExists(int id)
+        //private bool UsuarioExists(int id)
+        //{
+        //    return Ok(_context.BuscarPorId(id).Any());
+        //}
+        // GET: Usuario/BuscarUsuarios/
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Usuario>>> BuscarUsuarios()
         {
-            return _context.Usuario.Any(e => e.Id == id);
+            return Ok(await _context.Listar());
         }
     }
 }

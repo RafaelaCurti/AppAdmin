@@ -22,11 +22,12 @@ namespace VetAdmin.Controllers
         }
 
         // GET: Clientes
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Cliente.ToListAsync());
         }
-
+        [HttpGet]
         // GET: Clientes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -44,7 +45,7 @@ namespace VetAdmin.Controllers
 
             return View(cliente);
         }
-
+        [HttpGet]
         // GET: Clientes/Create
         public IActionResult Create()
         {
@@ -66,7 +67,7 @@ namespace VetAdmin.Controllers
             }
             return View(cliente);
         }
-
+        [HttpGet]
         // GET: Clientes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -86,7 +87,7 @@ namespace VetAdmin.Controllers
         // POST: Clientes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Profissao,CanalDeComunicacaoEscolhido,CEP")] Cliente cliente)
         {
@@ -117,7 +118,7 @@ namespace VetAdmin.Controllers
             }
             return View(cliente);
         }
-
+        [HttpGet]
         // GET: Clientes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -137,7 +138,7 @@ namespace VetAdmin.Controllers
         }
 
         // POST: Clientes/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpDelete, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -146,7 +147,7 @@ namespace VetAdmin.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+        [HttpGet]
         private bool ClienteExists(int id)
         {
             return _context.Cliente.Any(e => e.Id == id);

@@ -22,12 +22,14 @@ namespace VetAdmin.Controllers
         }
 
         // GET: Funcionarios
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Funcionario.ToListAsync());
         }
 
         // GET: Funcionarios/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,6 +48,7 @@ namespace VetAdmin.Controllers
         }
 
         // GET: Funcionarios/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -68,6 +71,7 @@ namespace VetAdmin.Controllers
         }
 
         // GET: Funcionarios/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,7 +90,7 @@ namespace VetAdmin.Controllers
         // POST: Funcionarios/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,EVeterinario,EAdministrativo,CNPJ,Area,Especialidade")] Funcionario funcionario)
         {
@@ -117,7 +121,7 @@ namespace VetAdmin.Controllers
             }
             return View(funcionario);
         }
-
+        [HttpGet]
         // GET: Funcionarios/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -137,7 +141,7 @@ namespace VetAdmin.Controllers
         }
 
         // POST: Funcionarios/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpDelete, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -146,7 +150,7 @@ namespace VetAdmin.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+        [HttpGet]
         private bool FuncionarioExists(int id)
         {
             return _context.Funcionario.Any(e => e.Id == id);
